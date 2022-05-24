@@ -65,20 +65,26 @@ public class GameManager : MonoBehaviour
 
     public void SelectCard(string name, Button btn)
     {
-        for(int i = 0; i < json_file.myBlocklist.blocks.Length; i++)
+
+        for (int i = 0; i < json_file.myBlocklist.blocks.Length; i++)
         {
-            if (name == json_file.myBlocklist.blocks[i].R + "-" + json_file.myBlocklist.blocks[i].C)btn.text = json_file.myBlocklist.blocks[i].number;
+            if (name == json_file.myBlocklist.blocks[i].R + "-" + json_file.myBlocklist.blocks[i].C) btn.text = json_file.myBlocklist.blocks[i].number;
         }
         click_counter++;
         if (selected1 != null && selected2 != null) CheckNumber();
+
+
     }
     public void WichBtn(EventBase btnEvent)
     {
-        Button button = btnEvent.target as Button;
-        button.SetEnabled(false);
-        if (selected1 == null) selected1 = button;
-        else selected2 = button;
-        SelectCard(button.name, button);
+        if (selected1 == null || selected2 == null)
+        {
+            Button button = btnEvent.target as Button;
+            button.SetEnabled(false);
+            if (selected1 == null) selected1 = button;
+            else selected2 = button;
+            SelectCard(button.name, button);
+        }
     }
     public void CheckNumber()
     {
@@ -108,7 +114,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(win == false)time += Time.deltaTime;
+        if (win == false) time += Time.deltaTime;
         if (counter == win_condition)
         {
             win = true;
@@ -118,6 +124,8 @@ public class GameManager : MonoBehaviour
     }
     public void SaveData()
     {
+        var root = GameObject.Find("GameScreen").GetComponent<UIDocument>().rootVisualElement;
+        root.Q<VisualElement>("Win").visible = true;
         results.total_clicks = click_counter;
         results.total_time = time;
 
